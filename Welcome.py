@@ -1,10 +1,5 @@
 import streamlit as st
 
-# st.set_page_config(
-#     page_title="Hello",
-#     page_icon="👋",
-# )
-
 st.write("# Welcome to DO243A!")
 
 st.sidebar.success("Select a demo above.")
@@ -16,5 +11,5 @@ st.markdown(
   and build some interactive web app with it.
 
   **👈 Select a demo from the sidebar** to see some examples
-"""
-)
+""")
+ 

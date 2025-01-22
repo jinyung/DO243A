@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      content="width=device-width, initial-scale=1, shrink-to-fit=yes"
     />
     <title>DO243A Demos</title>
     <link
@@ -19,14 +19,17 @@
 import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build/stlite.js"
 mount(
   {
-    requirements: ["cartopy", "matplotlib"],
-    entrypoint: "welcome.py",
+    requirements: ["cartopy", "matplotlib", "plotly", "scikit-learn"],
+    entrypoint: "Welcome.py",
     files: {
-	  "welcome.py": {
-		url: "./welcome.py",
+	  "Welcome.py": {
+	    url: "./Welcome.py",
 	  },
-	  "pages/current.py": {
-		url: "./current.py",
+	  "pages/Ocean_current.py": {
+	    url: "./Ocean_current.py",
+	  },
+	  "pages/Visualize_K_means_clustering.py": {
+	    url: "Visualize_K_means_clustering.py",
 	  },
 	  "sadcp_grid15moa.csv.gz": {
 	    url: "./data/sadcp_grid15moa.csv.gz"

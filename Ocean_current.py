@@ -5,8 +5,14 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
 # Load data
+
+@st.cache_data
+def load_csv(file_path):
+    return pd.read_csv(file_path)
+
+# Load the data
 data_file = 'sadcp_grid15moa.csv.gz'
-data = pd.read_csv(data_file)
+data = load_csv(data_file)
 
 # Map time periods to seasons
 key_season = {
@@ -18,9 +24,6 @@ key_season = {
     17: "Northeast monsoon months (Oct-Apr)",
     18: "Southwest monsoon months (May-Sep)"
 }
-
-# Streamlit app
-st.title("Ocean current around Taiwan")
 
 # Sidebar for filters
 st.sidebar.header("View Options")
@@ -81,5 +84,4 @@ ax.set_title(f"Daily drifting trajectory at {selected_depth} m depth\n{selected_
 # Show plot in app
 st.pyplot(fig)
 
-st.write("Data from [Ocean Data Bank, National Science and Technology Council](https://www.odb.ntu.edu.tw/adcp/display/traj/), \
-    which can be downloaded from [here](https://www.odb.ntu.edu.tw/adcp/adcp15moa/)")
+st.write("Data from [Ocean Data Bank, National Science and Technology Council](https://www.odb.ntu.edu.tw/adcp/display/traj/), which can be downloaded from [here](https://www.odb.ntu.edu.tw/adcp/adcp15moa/)")
