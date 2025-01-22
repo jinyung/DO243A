@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Stlite app</title>
+    <title>DO243A Demos</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build/style.css"
@@ -20,20 +20,21 @@ import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build
 mount(
   {
     requirements: ["cartopy", "matplotlib"],
-    entrypoint: "current.py",
+    entrypoint: "welcome.py",
     files: {
-		"current.py": {
-			url: "./current.py",
-		},
-		"sadcp_grid15moa.csv.gz": {
-			url: "./data/sadcp_grid15moa.csv.gz"
-		},
+	  "welcome.py": {
+		url: "./welcome.py",
+	  },
+	  "pages/current.py": {
+		url: "./current.py",
+	  },
+	  "sadcp_grid15moa.csv.gz": {
+	    url: "./data/sadcp_grid15moa.csv.gz"
+	  },
 	},
   },
   document.getElementById("root")
 )
-
     </script>
   </body>
-  <!-- Generated from Stlite Sharing (https://edit.share.stlite.net/), and the source version is aac269fd89821ff9039c2a1b4ac08dea750078fc -->
 </html>

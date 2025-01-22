@@ -51,7 +51,7 @@ v = filtered_data["v_avg(m/s)"].values
 map_extent = [117, 125, 18, 27]  # [lon_min, lon_max, lat_min, lat_max]
 
 # Create map with PlateCarree projection
-fig, ax = plt.subplots(subplot_kw={"projection": ccrs.PlateCarree()}, figsize=(10, 10))
+fig, ax = plt.subplots(subplot_kw={"projection": ccrs.PlateCarree()}, figsize=(7, 7))
 
 # Set extent to the fixed region
 ax.set_extent(map_extent, crs=ccrs.PlateCarree())
