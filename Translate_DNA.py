@@ -69,7 +69,7 @@ st.title("Translate DNA to protein sequences")
 st.write("Upload a file or paste DNA sequences to translate them to protein sequences.")
 
 # Create tabs for different input methods
-tab1, tab2 = st.tabs(["Upload File", "Paste Sequence"])
+tab1, tab2 = st.tabs(["Paste Sequence", "Upload File"])
 
 # display module to be used in both module
 def display_translation_results(sequences):
@@ -101,25 +101,25 @@ def display_translation_results(sequences):
     )
 
 with tab1:
+    use_sample = st.sidebar.checkbox("Use sample sequence", value=False)
+    default_seq = ">sequence_1 \
+    ATGCCTAAGGTTAAATAAG \
+    >sequence_2 \
+    ATGGCTACTCAGGAGAGGT"
+    sequences = st.text_area("Paste your sequence here (FASTA format or plain sequence):" 
+        default_seq if use_sample else "", height=200)
+    if st.button("Translate") and sequences:
+        display_translation_results(sequences)
+
+with tab2:     
     uploaded_file = st.file_uploader("Choose a file", type=None)  # Accept any file extension
     if uploaded_file:
         sequences = uploaded_file.read().decode('utf-8')
         display_translation_results(sequences)
 
-with tab2:
-    sequences = st.text_area("Paste your sequence here (FASTA format or plain sequence):", height=200)
-    if st.button("Translate") and sequences:
-        display_translation_results(sequences)
-
 # Add instructions
 st.markdown("""
 ---
-### Instructions:
-1. Choose either the "Upload File" or "Paste Sequence" tab
-2. Input your DNA sequence(s) - both FASTA format and plain sequences are accepted
-3. For pasted sequences, click the "Translate" button
-4. View the translated protein sequences below
-
 **FASTA format example:**
 ```
 >sequence_1
