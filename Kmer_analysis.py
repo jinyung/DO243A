@@ -5,11 +5,12 @@ import plotly.express as px
 st.title("K-mer Analysis")
 
 # Input sequence
-sequence = st.text_area("Enter your sequence:", 
-"GATCACAGGTCTATCACCCTATTAACCACTCACGGGAGCTCTCCATGCATTTGGTATTTTCGTCTGGGGGGTATGCACGCGATAGCATTGCGAGACGCTGGAGCCGGAGCACCCTATGTCGCAGTATCTGTCTTTGATTC").upper()
+use_sample = st.sidebar.checkbox("Use sample sequence", value=True)
+default_seq = "GATCACAGGTCTATCACCCTATTAACCACTCACGGGAGCTCTCCATGCATTTGGTATTTTCGTCTGGGGGGTATGCACGCGATAGCATTGCGAGACGCTGGAGCCGGAGCACCCTATGTCGCAGTATCTGTCTTTGATTC"
+sequence = st.text_area("Enter your sequence:", default_seq if use_sample else "").upper()
 
 # K-mer size
-k = st.slider("Select k-mer size:", 2, 5, 3)
+k = st.sidebar.slider("Select k-mer size:", 2, 5, 3)
 
 if sequence:
 	# Generate k-mers using sliding window
