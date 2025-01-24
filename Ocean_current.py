@@ -5,7 +5,6 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
 # Load data
-
 @st.cache_data
 def load_csv(file_path):
     return pd.read_csv(file_path)

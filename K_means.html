@@ -7,36 +7,27 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=yes"
     />
-    <title>DO243A Demos</title>
+    <title>DO243A K-means</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build/style.css"
     />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="kmeans"></div>
     <script type="module">
 import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build/stlite.js"
 mount(
   {
-    requirements: ["plotly"],
-    entrypoint: "Welcome.py",
+    requirements: ["plotly", "scikit-learn", "numpy"],
+    entrypoint: "Visualize_K_means_clustering.py",
     files: {
-      "Welcome.py": {
-        url: "./Welcome.py",
-      },
-      "pages/Kmer_analysis.py": {
-        url: "Kmer_analysis.py",
-      },
-      "pages/Sliding_average_1D.py": {
-        url: "Sliding_average_1D.py",
-      },
-      "pages/Translate_DNA.py": {
-        url: "Translate_DNA.py",
+      "Visualize_K_means_clustering.py": {
+        url: "Visualize_K_means_clustering.py",
       },
     },
   },
-  document.getElementById("root")
+  document.getElementById("kmeans")
 )
     </script>
   </body>

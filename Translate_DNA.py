@@ -45,21 +45,11 @@ def parse_fasta(content):
 def translate_dna(sequence):
     sequence = sequence.upper().replace('\n', '').replace(' ', '')
     protein = []
-    
-    # Find start codon
-    start_pos = sequence.find('ATG')
-    if start_pos == -1:
-        return "No start codon (ATG) found"
-    
+     
     # Translate codons to amino acids
-    for i in range(start_pos, len(sequence)-2, 3):
-        codon = sequence[i:i+3]
-        if len(codon) < 3:
-            break
-        
+    for i in range(0, len(sequence)-2, 3):
+        codon = sequence[i:i+3]     
         amino_acid = GENETIC_CODE.get(codon, 'X')
-        if amino_acid == '*':
-            break
         protein.append(amino_acid)
     
     return ''.join(protein)
@@ -97,16 +87,13 @@ def display_translation_results(sequences):
         label="Download FASTA file",
         data=fasta_text,
         file_name="translated_proteins.fasta",
-        mime="text/plain"
+        mime="text/plain"  # let browser know file type
     )
 
 with tab1:
     use_sample = st.sidebar.checkbox("Use sample sequence", value=False)
-    default_seq = ">sequence_1 \
-    ATGCCTAAGGTTAAATAAG \
-    >sequence_2 \
-    ATGGCTACTCAGGAGAGGT"
-    sequences = st.text_area("Paste your sequence here (FASTA format or plain sequence):" 
+    default_seq = ">sequence_1\nATGCCTAAGGTTAAATAAG\n>sequence_2\nATGGCTACTCAGGAGAGGT"
+    sequences = st.text_area("Paste your sequence here (FASTA format or plain sequence):",  
         default_seq if use_sample else "", height=200)
     if st.button("Translate") and sequences:
         display_translation_results(sequences)
@@ -120,6 +107,8 @@ with tab2:
 # Add instructions
 st.markdown("""
 ---
+**Notes:**
+
 **FASTA format example:**
 ```
 >sequence_1
