@@ -48,6 +48,7 @@ def kmeans(data, k):
 st.title("Visualize K-means clustering iterations")
 
 # Sidebar for user inputs
+st.sidebar.header("Data generation and K-means parameters")
 n_samples = st.sidebar.slider("Number of samples", 100, 1000, 300, step = 50)
 k = st.sidebar.slider("Number of K-Means Clusters (k)", 2, 10, 5)
 n_clusters = st.sidebar.slider("Number of True Clusters", 2, 10, 5)

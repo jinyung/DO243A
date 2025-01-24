@@ -91,6 +91,7 @@ def display_translation_results(sequences):
     )
 
 with tab1:
+    st.sidebar.header("Options")
     use_sample = st.sidebar.checkbox("Use sample sequence", value=False)
     default_seq = ">sequence_1\nATGCCTAAGGTTAAATAAG\n>sequence_2\nATGGCTACTCAGGAGAGGT"
     sequences = st.text_area("Paste your sequence here (FASTA format or plain sequence):",  

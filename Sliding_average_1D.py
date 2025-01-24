@@ -18,6 +18,7 @@ def sliding_window_average(data, window_size):
 st.title("Sliding Window Average (1D)")
 
 # User control
+st.sidebar.header("Options")
 use_toy_data = st.sidebar.checkbox('Use example data', value=True)
 window_size = st.sidebar.slider('Window Size', 3, 21, 3, 2)
 
