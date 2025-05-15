@@ -20,8 +20,19 @@ df_year = df[df["SEASON"] == year]
 
 # Select typhoon(s)
 typhoons = sorted(df_year["NAME"].unique())
-selected = st.multiselect("Select Typhoon(s)", typhoons, 
-                          default=typhoons[:1])
+
+def expand_select_all():
+    if "Select all" in st.session_state.typhoon:
+        st.session_state.typhoon = typhoons
+
+selected = st.multiselect(
+    "Select Typhoon(s)", 
+    ["Select all"] + typhoons, 
+    default=typhoons[:1],
+    key="typhoon",
+    on_change=expand_select_all
+)
+
 if not selected:
     st.error("Please select at least one typhoon.")
     st.stop()
@@ -77,7 +88,7 @@ st.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view,
                          tooltip={"text": "{tooltip}"}))
 
 # Explanation
-st.markdown("### CWB Typhoon Classification")
+st.markdown("### 🌀 CWB Typhoon Classification")
 st.markdown("""
 | Label | Category             | Wind Speed (m/s)   |
 |:-----:|----------------------|--------------------|
