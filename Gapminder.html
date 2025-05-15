@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=yes"
+    />
+    <title>Gapminder</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build/style.css"
+    />
+  </head>
+  <body>
+    <div id="gapminder"></div>
+    <script type="module">
+import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build/stlite.js"
+mount(
+  {
+    requirements: ["numpy", "plotly"],
+    entrypoint: "gapminder.py",
+    files: {
+      "gapminder.py": {
+        url: "gapminder.py",
+      },
+    },
+  },
+  document.getElementById("gapminder")
+)
+    </script>
+  </body>
+</html>
