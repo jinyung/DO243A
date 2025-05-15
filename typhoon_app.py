@@ -5,45 +5,10 @@ from pydeck.data_utils import compute_view
 
 st.title("Typhoon track viewer")
 
-@st.cache_data
-def load_data():
-    df = pd.read_csv("typhoons_wp_clean.csv")
-    df["TOKYO_WIND"] = pd.to_numeric(df["TOKYO_WIND"], errors="coerce")
-    return df
-
-df = load_data()
-
-# Select year 
-years = sorted(df["SEASON"].unique(), reverse=True)
-year = st.selectbox("Select Year", years)
-df_year = df[df["SEASON"] == year]
-
-# Select typhoon(s)
-typhoons = sorted(df_year["NAME"].unique())
-
-def expand_select_all():
-    if "Select all" in st.session_state.typhoon:
-        st.session_state.typhoon = typhoons
-
-selected = st.multiselect(
-    "Select Typhoon(s)", 
-    ["Select all"] + typhoons, 
-    default=typhoons[:1],
-    key="typhoon",
-    on_change=expand_select_all
-)
-
-if not selected:
-    st.error("Please select at least one typhoon.")
-    st.stop()
-
-df_sel = df_year[df_year["NAME"].isin(selected)].copy()
-
 # CWB classification
 def classify(w):
     if pd.isna(w): 
         return "Unknown"
-    w = w * 0.51444  # Convert to m/s
     if w < 17.2: 
         return "Tropical Depression"
     elif w <= 32.6:
@@ -53,8 +18,92 @@ def classify(w):
     else: 
         return "Severe Typhoon"
 
-df_sel["CLASS"] = df_sel["TOKYO_WIND"].apply(classify)
+# load data        
+@st.cache_data
+def load_data():
+    df = pd.read_csv("typhoons_wp_clean.csv")
+    df["TOKYO_WIND"] = pd.to_numeric(df["TOKYO_WIND"], errors="coerce")
+    df["WIND_MS"] = (df["TOKYO_WIND"] * 0.51444).round(1)  # Convert to m/s
+    df["CLASS"] = df["WIND_MS"].apply(classify)
+    return df
 
+df = load_data()
+
+# create a dataframe of typhoon tracks with max wind speed and category
+tracks_df = (
+    df.groupby(["SEASON","SID", "NAME"])["WIND_MS"]
+    .max()
+    .dropna()
+    .reset_index()
+    .rename(columns={"SEASON": "Year", "WIND_MS": "Max Wind (m/s)"})
+)
+tracks_df["Category"] = tracks_df["Max Wind (m/s)"].apply(classify)
+
+# select year
+st.sidebar.write("### Choose range of years")
+years = sorted(tracks_df["Year"].unique())
+year_start, year_end = st.sidebar.select_slider(
+    "Select Year", years,
+    value=(2020, 2024),
+    key="select_year"
+)
+years_mask = tracks_df["Year"].between(year_start, year_end)
+
+# select category
+cats = sorted(tracks_df["Category"].unique(), reverse=True)
+st.sidebar.write("### Choose typhoon category")
+chosen = []
+for label in cats:
+    if st.sidebar.checkbox(label, value=True):
+        chosen.append(label)
+cats = chosen
+cats_mask = tracks_df["Category"].isin(cats)
+
+selected_df = tracks_df[years_mask & cats_mask].sort_values(["Year", "Max Wind (m/s)"], ascending=False)
+
+# Explanation
+st.sidebar.markdown("""
+### CWB Typhoon Classification
+            
+| Label | Category             | Wind Speed (m/s)   |
+|:-----:|----------------------|--------------------|
+| 🔴     | Severe Typhoon       | ≥ 51.0             |
+| 🟡     | Moderate Typhoon     | 32.7 - 50.9        |
+| 🟢     | Mild Typhoon         | 17.2 - 32.6        |
+| 🔵     | Tropical Depression  | < 17.2             |
+| ⚪     | Unknown              | —                  |
+      
+Data source: IBTrACS (Version 4r01): [doi:10.25921/82ty-9e16](https://doi.org/10.25921/82ty-9e16)
+"""
+)
+
+map = st.container()
+
+# display the filtered dataframe (search results)
+st.write(f"""### Search results
+There are {len(selected_df)} typhoons in {year_start}-{year_end} with the selected category.
+
+Please select typhoon(s) to view on map:""")
+selection_event = st.dataframe(
+    selected_df,
+    column_order=("Year", "NAME", "Category","Max Wind (m/s)"),
+    hide_index = True,
+    on_select="rerun",
+    selection_mode="multi-row",
+    use_container_width=True, 
+    height=200
+)
+
+# select from the filtered dataframe
+selected_rows = selection_event.get("selection", {}).get("rows") if selection_event else []
+if selected_rows:
+    selected_sid = selected_df.iloc[selected_rows, :]["SID"]
+    df_sel = df[df["SID"].isin(selected_sid)]
+else:
+    st.error("Please select at least one typhoon from the search results")
+    st.stop()
+
+# preparing data for map
 # Color by class
 color_map = {
     "Severe Typhoon": [255, 0, 0],         # 🔴 red
@@ -84,17 +133,5 @@ layer = pdk.Layer(
 
 # Compute view based on data and show map
 view = compute_view(df_sel[["LON", "LAT"]])  
-st.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view, 
-                         tooltip={"text": "{tooltip}"}))
-
-# Explanation
-st.markdown("### 🌀 CWB Typhoon Classification")
-st.markdown("""
-| Label | Category             | Wind Speed (m/s)   |
-|:-----:|----------------------|--------------------|
-| 🔴     | Severe Typhoon       | ≥ 51.0             |
-| 🟡     | Moderate Typhoon     | 32.7 - 50.9        |
-| 🟢     | Mild Typhoon         | 17.2 - 32.6        |
-| 🔵     | Tropical Depression  | < 17.2             |
-| ⚪     | Unknown              | —                  |
-""")
+map.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view, 
+                        tooltip={"text": "{tooltip}"}))
