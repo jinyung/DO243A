@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=yes"
+    />
+    <title>Typhoon track viewer</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build/style.css"
+    />
+  </head>
+  <body>
+    <div id="typhoon"></div>
+    <script type="module">
+import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@0.76.2/build/stlite.js"
+mount(
+  {
+    requirements: ["pandas"],
+    entrypoint: "typhoon_app.py",
+    files: {
+      "typhoon_app.py": {
+        url: "typhoon_app.py",
+      },
+      "typhoons_wp_clean.csv": {
+        url: "./data/typhoons_wp_clean.csv"
+      },
+    },
+  },
+  document.getElementById("typhoon")
+)
+    </script>
+  </body>
+</html>
