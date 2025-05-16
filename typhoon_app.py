@@ -34,7 +34,7 @@ df = load_data()
 
 # create a dataframe of typhoon tracks with max wind speed and category
 tracks_df = (
-    df.groupby(["SEASON","SID", "NAME"])["Max Wind (m/s)"]
+    df.groupby(["SEASON","SID", "NAME"])["Wind (m/s)"]
     .max()
     .dropna()
     .reset_index()
@@ -92,7 +92,7 @@ with col1:
     # display the filtered dataframe (search results)
     selection_event = st.dataframe(
         selected_df,
-        column_order=("Year", "Typhoon name", "Category","Wind (m/s)"),
+        column_order=("Year", "Typhoon name", "Category","Max Wind (m/s)"),
         hide_index = True,
         on_select="rerun",
         selection_mode="multi-row",
