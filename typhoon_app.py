@@ -34,7 +34,7 @@ df = load_data()
 
 # create a dataframe of typhoon tracks with max wind speed and category
 tracks_df = (
-    df.groupby(["SEASON","SID", "NAME"])["Wind (m/s)"]
+    df.groupby(["SEASON","SID", "NAME"])["Max Wind (m/s)"]
     .max()
     .dropna()
     .reset_index()
