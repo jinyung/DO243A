@@ -1,18 +1,38 @@
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
 import numpy as np
-import keras
 
-# Load model directly from Hugging Face Hub (with cache)
+# Load weights
 @st.cache_resource
-def load_model():
-  return keras.saving.load_model("hf://jin-yung/mnist")
+def load_weights():
+  weights = np.load("mnist_mlp_weights.npz")
+  return weights
 
-model = load_model()
+weights = load_weights()
+
+def relu(x):
+  return np.maximum(0, x)
+
+def softmax(x):
+  e_x = np.exp(x - np.max(x))
+  return e_x / e_x.sum(axis=1, keepdims=True)
+
+# Forward pass for Flatten -> Dense(32, relu) -> Dense(10, softmax)
+def forward(x):
+  W1, b1 = weights['W1'], weights['b1']
+  W2, b2 = weights['W2'], weights['b2']
+  x = x.reshape((1, -1))  # Flatten
+  a1 = relu(np.dot(x, W1) + b1)
+  a2 = np.dot(a1, W2) + b2
+  return softmax(a2)
 
 def preprocess(img):
   # gray: take first layer
   gray = img[..., 0].astype("float32")
+  
+  # Check if the image is blank (all white)
+  if np.all(gray == 255):
+    return None
 
   # shift
   ys, xs = np.where(gray==0)
@@ -33,19 +53,13 @@ st.info("Draw a digit (0-9) on the canvas, then press **Predict** to classify it
 canvas = st_canvas(stroke_color="black", background_color="white",
   width=280, height=280, stroke_width=20, drawing_mode="freedraw")
 
-# st.write(canvas)
-
 # Predict button
 if st.button("Predict"):
-  if canvas.image_data is not None:
-    x = preprocess(canvas.image_data)
-
-    # Predict with model
-    probs = model.predict(x, verbose=0)[0]
+  x = preprocess(canvas.image_data)
+  if x is not None:
+    probs = forward(x)[0]
     pred = int(np.argmax(probs))
-
-    # Show result
     st.subheader(f"Prediction: **{pred}**")
-    st.bar_chart(probs, y_label='Probability', horizontal = True)
+    st.bar_chart(probs, y_label='Probability', horizontal=True)
   else:
-    st.warning("Please draw a digit before predicting.")
+    st.warning("Please draw a digit on the canvas.")

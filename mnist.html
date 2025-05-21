@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=yes"
+    />
+    <title>Predict Handwritten Number</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/browser@0.80.5/build/style.css"
+    />
+  </head>
+  <body>
+    <div id="mnist"></div>
+    <script type="module">
+import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@0.80.5/build/stlite.js"
+mount(
+  {
+    requirements: ["numpy", "streamlit_drawable_canvas"],
+    entrypoint: "mnist.py",
+    files: {
+      "mnist.py": {
+        url: "mnist.py",
+      },
+      "mnist_mlp_weights.npz": {
+        url: "./data/mnist_mlp_weights.npz"
+      },
+    },
+  },
+  document.getElementById("mnist")
+)
+    </script>
+  </body>
+</html>
